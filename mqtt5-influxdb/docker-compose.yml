@@ -1,0 +1,50 @@
+
+name: STM32-MQTT-DB
+
+services:
+  mqtt5:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt5
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # WebSocket port
+    volumes:
+      - mqtt-config:/mosquitto/config:rw
+      - mqtt-data:/mosquitto/data:rw
+      - mqtt-log:/mosquitto/log:rw
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf  # Custom config
+    networks:
+      - iot-network
+    restart: unless-stopped
+    # config for host.docker.internal
+
+  influxdb2:
+    image: influxdb:alpine
+    container_name: influxdb2
+    ports:
+      - "8086:8086"  # InfluxDB UI and API
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USERNAME:-myusername}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD:-mypassword}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUXDB_TOKEN:-mytoken}
+      - DOCKER_INFLUXDB_INIT_ORG=IoT
+      - DOCKER_INFLUXDB_INIT_BUCKET=Node-RED
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+    volumes:
+      - influxdb2-data:/var/lib/influxdb2
+      - influxdb2-config:/etc/influxdb2
+    networks:
+      - iot-network
+    restart: unless-stopped
+
+volumes:
+  mqtt-config:
+  mqtt-data:
+  mqtt-log:
+  influxdb2-data:
+  influxdb2-config:
+
+networks:
+  iot-network:
+    driver: bridge
