@@ -1,0 +1,28 @@
+
+name: STM32-MQTT
+
+services:
+  mqtt5:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt5
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # WebSocket port
+    volumes:
+      - mqtt-config:/mosquitto/config:rw
+      - mqtt-data:/mosquitto/data:rw
+      - mqtt-log:/mosquitto/log:rw
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf  # Custom config
+    networks:
+      - iot-network
+    restart: unless-stopped
+    # config for host.docker.internal
+
+volumes:
+  mqtt-config:
+  mqtt-data:
+  mqtt-log:
+
+networks:
+  iot-network:
+    driver: bridge
