@@ -97,29 +97,3 @@ This Docker Compose configuration defines an IoT stack named "STM32-IoT" with th
 
 6. **InfluxDB Version**:
    - Verify `influxdb:alpine` is the desired version (e.g., InfluxDB 2.x). Use a specific tag like `influxdb:2.7-alpine` if needed.
-
-7. **Security Recommendations**:
-   - Enable authentication and TLS for Mosquitto.
-   - Secure Node-RED UI with a password in `settings.js`.
-   - Use HTTPS for InfluxDB.
-
-8. **Docker Compose Version**:
-   - Add `version: '3.8'` at the top of the file for clarity.
-
-## How to Run
-
-1. **Create `mosquitto.conf`**:
-   - Place in the same directory as `docker-compose.yml`:
-     ```conf
-     persistence true
-     persistence_location /mosquitto/data/
-     log_dest file /mosquitto/log/mosquitto.log
-     listener 1883
-     allow_anonymous true  # For testing
-     ```
-
-2. **Optional: Create `.env` File**:
-   ```env
-   INFLUXDB_USERNAME=youruser
-   INFLUXDB_PASSWORD=yourpass
-   INFLUXDB_TOKEN=yourtoken
