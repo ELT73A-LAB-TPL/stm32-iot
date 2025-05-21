@@ -6,13 +6,13 @@ Follow these steps to test the `mqtt5` service (Mosquitto MQTT broker) using int
 Ensure the `mqtt5` container is active and listening on ports `1883` and `9001`.
 
 - Check running containers:
-  ```bash
-  docker ps
- ```
-    Look for the mqtt5 container with the image eclipse-mosquitto:latest.
-    If not running, start the stack:
-  ```bash
-    docker-compose up -d
+```bash
+docker ps
+```
+Look for the mqtt5 container with the image eclipse-mosquitto:latest.
+If not running, start the stack:
+```bash
+docker-compose up -d
  ```
 ### 2. Run an Interactive Mosquitto Client Container
 Use the eclipse-mosquitto:latest image to run mosquitto_sub and mosquitto_pub commands in separate containers connected to the iot-network.
