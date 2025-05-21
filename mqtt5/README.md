@@ -53,7 +53,7 @@ To use this file, you would typically:
 4.  Run `docker compose up -d` to start the services in detached mode.
 
 
-# To test your **STM32-MQTT** Docker Compose setup, you'll need an **MQTT client** to publish messages to and subscribe from your Mosquitto broker.
+## To test your **STM32-MQTT** Docker Compose setup, you'll need an **MQTT client** to publish messages to and subscribe from your Mosquitto broker.
 
 First, ensure your Docker Compose services are running:
 
