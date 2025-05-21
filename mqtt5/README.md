@@ -19,9 +19,9 @@ Use the eclipse-mosquitto:latest image to run mosquitto_sub and mosquitto_pub co
 Subscribe to a Topic (mosquitto_sub)
 
     Start a container to subscribe to a test topic:
-  ```bash
-    docker run -it --rm --network stm32-mqtt-db_iot-network eclipse-mosquitto:latest mosquitto_sub -h mqtt5 -p 1883 -t test/topic
- ```
+```bash
+docker run -it --rm --network stm32-mqtt-db_iot-network eclipse-mosquitto:latest mosquitto_sub -h mqtt5 -p 1883 -t test/topic
+```
         --rm: Removes the container after it exits.
         --network stm32-mqtt-db_iot-network: Connects to the Docker Compose network, allowing resolution of the mqtt5 hostname.
         -h mqtt5: Targets the mqtt5 service.
