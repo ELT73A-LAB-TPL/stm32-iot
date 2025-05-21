@@ -1,5 +1,5 @@
 The provided `docker-compose.yml` file defines a Docker Compose setup for an MQTT broker, specifically using the Eclipse Mosquitto image. Let's break down its components:
-
+- https://youtu.be/0u_JivLyvFc
 **Overall Project Name:**
 
 * `name: STM32-MQTT` - This sets the name of your Docker Compose project. When you run `docker compose up`, the containers, networks, and volumes will be prefixed with `stm32-mqtt_` by default.
