@@ -4,6 +4,10 @@
 
 This Docker Compose configuration defines an IoT stack named "STM32-IoT" with three services: `mqtt5` (Mosquitto MQTT broker), `node-red` (Node-RED), and `influxdb2` (InfluxDB). The services are connected via a bridge network, with persistent volumes for data storage.
 
+## Get Docker
+Docker is an open platform for developing, shipping, and running applications.
+- https://docs.docker.com/get-started/get-docker/
+
 ## Services
 
 ### 1. mqtt5 (MQTT Broker)
