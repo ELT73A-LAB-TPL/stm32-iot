@@ -1,32 +1,32 @@
 import os
-import secrets
-import string
-
-def generate_random_string(length=16):
-    """Generate a random string of specified length."""
-    characters = string.ascii_letters + string.digits + string.punctuation
-    return ''.join(secrets.choice(characters) for i in range(length))
+# import secrets # No longer needed
+# import string # No longer needed
+from faker import Faker # Import Faker
 
 def create_influxdb_env_file():
     """
-    Creates a .env file with randomly generated InfluxDB configuration variables.
+    Creates a .env file with randomly generated InfluxDB configuration variables using Faker.
     """
     env_file_path = '.env'
 
+    # Initialize Faker
+    fake = Faker()
+
     print("This script will create a .env file for your InfluxDB Docker Compose setup.")
-    print("It will generate random values for username, password, and token.")
+    print("It will generate random values for username, password, and token using Faker.")
+    print("Make sure you have 'faker' installed (pip install faker).")
     print("-" * 60)
 
-    # Generate random values
-    username = generate_random_string(10) # Shorter for username
-    password = generate_random_string(20)
-    token = generate_random_string(40) # Longer for token for better security
+    # Generate random values using Faker
+    username = fake.user_name() # Generates a realistic-looking username
+    password = fake.password(length=12) # Generates a strong password of 20 characters
+    token = fake.pystr(min_chars=40, max_chars=40) # Generates a random string of 40 characters for the token
 
     # Prepare content for the .env file
     env_content = f"""\
 # Environment variables for InfluxDB Docker Compose
 # These variables are used by the influxdb2 service in docker-compose.yml
-# Randomly generated values for enhanced security.
+# Randomly generated values for enhanced security, generated using Faker.
 
 INFLUXDB_USERNAME={username}
 INFLUXDB_PASSWORD={password}
