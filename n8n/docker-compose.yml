@@ -46,18 +46,28 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - n8n_network
+  # Mailpit service for email testing
   mailpit:
     image: axllent/mailpit:latest
     restart: always
+    volumes:
+      - mail_data:/data
     ports:
       - "8025:8025" # Mailpit web UI
       - "1025:1025" # Mailpit SMTP server
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - n8n_network
+
 volumes:
   n8n_data:
   pg_data:
-
+  mail_data:
+  
 networks:
   n8n_network:
     driver: bridge
