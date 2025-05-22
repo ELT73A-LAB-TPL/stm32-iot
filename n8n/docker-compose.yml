@@ -6,14 +6,14 @@ services:
       # Production settings
       - N8N_HOST=${N8N_HOST} # e.g., your.domain.com
       - N8N_PORT=5678
-      - N8N_PROTOCOL=https # or http if not using a reverse proxy with SSL
+      - N8N_PROTOCOL=http # Use http for internal communication with Mailpit
       - WEBHOOK_URL=${N8N_PROTOCOL}://${N8N_HOST}/
-      - N8N_EMAIL_MODE=smtp # or 'none' if you don't need email sending
-      - N8N_SMTP_HOST=${SMTP_HOST}
-      - N8N_SMTP_PORT=${SMTP_PORT}
-      - N8N_SMTP_USER=${SMTP_USER}
-      - N8N_SMTP_PASS=${SMTP_PASS}
-      - N8N_SMTP_SENDER=${SMTP_SENDER}
+      - N8N_EMAIL_MODE=smtp # Enable SMTP
+      - N8N_SMTP_HOST=mailpit # Mailpit service name in docker-compose network
+      - N8N_SMTP_PORT=1025 # Mailpit's SMTP port
+      - N8N_SMTP_USER= # Mailpit does not require SMTP user
+      - N8N_SMTP_PASS= # Mailpit does not require SMTP password
+      - N8N_SMTP_SENDER=n8n@example.com # Sender email for n8n
       - N8N_DB_TYPE=postgres
       - N8N_DB_POSTGRES_HOST=postgres
       - N8N_DB_POSTGRES_PORT=5432
@@ -31,6 +31,7 @@ services:
       - n8n_data:/home/node/.n8n
     depends_on:
       - postgres
+      - mailpit # Add dependency on mailpit
     networks:
       - n8n_network
 
@@ -45,7 +46,14 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - n8n_network
-
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - "8025:8025" # Mailpit web UI
+      - "1025:1025" # Mailpit SMTP server
+    networks:
+      - n8n_network
 volumes:
   n8n_data:
   pg_data:
