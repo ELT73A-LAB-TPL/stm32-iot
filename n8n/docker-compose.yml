@@ -1,0 +1,55 @@
+services:
+  n8n:
+    image: n8n:latest
+    restart: always
+    environment:
+      # Production settings
+      - N8N_HOST=${N8N_HOST} # e.g., your.domain.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https # or http if not using a reverse proxy with SSL
+      - WEBHOOK_URL=${N8N_PROTOCOL}://${N8N_HOST}/
+      - N8N_EMAIL_MODE=smtp # or 'none' if you don't need email sending
+      - N8N_SMTP_HOST=${SMTP_HOST}
+      - N8N_SMTP_PORT=${SMTP_PORT}
+      - N8N_SMTP_USER=${SMTP_USER}
+      - N8N_SMTP_PASS=${SMTP_PASS}
+      - N8N_SMTP_SENDER=${SMTP_SENDER}
+      - N8N_DB_TYPE=postgres
+      - N8N_DB_POSTGRES_HOST=postgres
+      - N8N_DB_POSTGRES_PORT=5432
+      - N8N_DB_POSTGRES_DATABASE=${POSTGRES_DB}
+      - N8N_DB_POSTGRES_USER=${POSTGRES_USER}
+      - N8N_DB_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_BASIC_AUTH_ACTIVE=true # Enable basic authentication
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      # Set timezone to match your server for correct cron scheduling
+      - TZ=America/Sao_Paulo # Adjust to your timezone (e.g., Europe/Berlin, America/New_York)
+    ports:
+      - "5678:5678" # Only expose if you don't have a reverse proxy
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+    networks:
+      - n8n_network
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - n8n_network
+
+volumes:
+  n8n_data:
+  pg_data:
+
+networks:
+  n8n_network:
+    driver: bridge
