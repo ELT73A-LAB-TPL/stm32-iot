@@ -54,3 +54,30 @@ This setup is ideal for:
 * Visualizing data using **InfluxDB's built-in UI** or other dashboarding tools like Grafana.
 
 ---
+
+### influx CLI demo
+
+These commands should help you get your InfluxDB instance configured.
+
+1.  Listing running Docker containers (`docker ps`).
+2.  Accessing the `influxdb2` container's bash shell (`docker exec -it influxdb2 bash`).
+3.  Creating an organization named "orgA".
+4.  Creating a user "orgA" within "orgA" organization.
+5.  Creating six buckets (bucket-A to bucket-F) under "orgA" organization.
+6.  Creating an all-access authorization token for the "orgA" user.
+
+```bash
+docker ps
+docker exec -it influxdb2 bash
+
+influx org create --name orgA --description orgA
+influx user create --org orgA --name orgA --password orgA
+for group in A B C D E F; do
+  influx bucket create --name bucket-${group} --org orgA
+done
+
+influx auth create --org orgA --user orgA --all-access
+```
+
+---
+
