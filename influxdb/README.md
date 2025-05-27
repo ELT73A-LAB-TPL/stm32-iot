@@ -70,6 +70,7 @@ These commands should help you get your InfluxDB instance configured.
 docker ps
 docker exec -it influxdb2 bash
 
+influx org ls
 influx org create --name orgA --description orgA
 influx user create --org orgA --name orgA --password orgA
 for group in A B C D E F; do
