@@ -72,7 +72,7 @@ docker exec -it influxdb2 bash
 
 influx org ls
 influx org create --name orgA --description orgA
-influx user create --org orgA --name orgA --password orgA
+influx user create --org orgA --name orgA --password orgApass
 for group in A B C D E F; do
   influx bucket create --name bucket-${group} --org orgA
 done
