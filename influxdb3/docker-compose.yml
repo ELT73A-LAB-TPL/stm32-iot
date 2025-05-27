@@ -1,0 +1,37 @@
+
+services:
+  influxdb3-core:
+    container_name: influxdb3-core
+    # Use the official InfluxDB 3 Core Docker image
+    image: influxdb:3-core # Updated image tag
+    ports:
+      # Map the container's default InfluxDB port (8181) to your host's port (8181)
+      - "8181:8181" # Updated port mapping
+    command: # Added command to start InfluxDB 3 Core with specific arguments
+      - influxdb3
+      - serve
+      - --node-id=node0
+      - --object-store=file
+      - --data-dir=/var/lib/influxdb3
+    volumes:
+      # Persist data to a named volume to ensure data is not lost when the container is removed
+      - influxdb3_data:/var/lib/influxdb3
+    environment:
+      # Optional: Set environment variables for InfluxDB configuration
+      # For example, to set an admin token (replace with a strong, secure token)
+      # - INFLUXDB_ADMIN_TOKEN=your_super_secret_token
+      # - INFLUXDB_HTTP_AUTH_ENABLED=true
+      # Consult InfluxDB 3 Core documentation for more environment variables
+      - INFLUXDB_CONFIG_PATH=/etc/influxdb3/config.toml # Default config path
+    # Optional: Restart policy to ensure the container starts automatically
+    networks:
+      - iot-network
+    restart: unless-stopped
+
+volumes:
+  # Define the named volume for InfluxDB 3 Core data persistence
+  influxdb3_data:
+
+networks:
+  iot-network:
+    driver: bridge
