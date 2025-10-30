@@ -1,0 +1,513 @@
+[
+    {
+        "id": "c535e74d.ab40f",
+        "type": "tab",
+        "label": "InfluxDB tests",
+        "disabled": false,
+        "info": "# InfluxDb Node Tests\n\nBefore starting up influxdb nodes, run all tests\nby clicking on inject nodes to ensure error handling is working.\n\nThe catch node should display an error 'connection refused' for all other than the \n`no query error` test.\n\nThen, start the databases as described in the README, adding tokens and credentials as needed to configuration nodes.\n\nAll segments should not throw errors.\n\nThe segment with the comment _check write test_ will ensure that data is actually written to the database by reading back the last entry once the output node has finished writing.\n"
+    },
+    {
+        "id": "ebcd25d5.a1e6e8",
+        "type": "influxdb in",
+        "z": "c535e74d.ab40f",
+        "influxdb": "aa92f3de7bb317f4",
+        "name": "",
+        "query": "from(bucket: \"bucket-A\")\n  |> range(start: -1d, stop: now())",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "Node-RED",
+        "x": 610,
+        "y": 460,
+        "wires": [
+            [
+                "62b2743e.dcd45c"
+            ]
+        ]
+    },
+    {
+        "id": "57c8251c.8b59fc",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 460,
+        "wires": [
+            [
+                "ebcd25d5.a1e6e8"
+            ]
+        ]
+    },
+    {
+        "id": "62b2743e.dcd45c",
+        "type": "debug",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 970,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "5f1d651e.dac6ec",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 40,
+        "wires": [
+            [
+                "85b35aa5.22b388"
+            ]
+        ]
+    },
+    {
+        "id": "85b35aa5.22b388",
+        "type": "function",
+        "z": "c535e74d.ab40f",
+        "name": "Value",
+        "func": "msg.payload = Math.random()*10;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 40,
+        "wires": [
+            [
+                "23734bf4.96bf24"
+            ]
+        ]
+    },
+    {
+        "id": "23734bf4.96bf24",
+        "type": "influxdb out",
+        "z": "c535e74d.ab40f",
+        "influxdb": "aa92f3de7bb317f4",
+        "name": "",
+        "measurement": "test",
+        "precision": "ms",
+        "retentionPolicy": "",
+        "database": "test",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "Node-RED",
+        "bucket": "bucket-A",
+        "x": 720,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "ba41fafd.7548b8",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "dad5dd81.245d5"
+            ]
+        ]
+    },
+    {
+        "id": "dad5dd81.245d5",
+        "type": "function",
+        "z": "c535e74d.ab40f",
+        "name": "Fields",
+        "func": "msg.payload = {\n    intValue: '10i',\n    numValue: 11.0,\n    strValue: \"message\",\n    randomValue: Math.random()*10\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 200,
+        "wires": [
+            [
+                "400d4e908394d080"
+            ]
+        ]
+    },
+    {
+        "id": "82265b10.7a2368",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 120,
+        "wires": [
+            [
+                "51f74cdf.05c2c4"
+            ]
+        ]
+    },
+    {
+        "id": "51f74cdf.05c2c4",
+        "type": "function",
+        "z": "c535e74d.ab40f",
+        "name": "Fields and Tags",
+        "func": "msg.payload = [{\n    numValue: 12,\n    randomValue: Math.random()*10,\n    strValue: \"message2\"\n},\n{\n    tag1:\"sensor1\",\n    tag2:\"device2\"\n}];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 120,
+        "wires": [
+            [
+                "400d4e908394d080"
+            ]
+        ]
+    },
+    {
+        "id": "651641f.326c8c",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "f0c19067.f6119"
+            ]
+        ]
+    },
+    {
+        "id": "f0c19067.f6119",
+        "type": "function",
+        "z": "c535e74d.ab40f",
+        "name": "multiple readings",
+        "func": "msg.payload = [\n    [{\n        numValue: 10,\n        randomValue: Math.random()*10,\n        strValue: \"message1\",\n        time: new Date().getTime()-1 // ensure not the same!\n    },\n    {\n        tag1:\"sensor1\",\n        tag2:\"device2\"\n    }],\n    [{\n        numValue: 20,\n        randomValue: Math.random()*10,\n        strValue: \"message2\",\n        time: new Date().getTime()\n    },\n    {\n        tag1:\"sensor1\",\n        tag2:\"device2\"\n    }]\n];\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 260,
+        "wires": [
+            [
+                "400d4e908394d080"
+            ]
+        ]
+    },
+    {
+        "id": "8b64f233.88ac6",
+        "type": "complete",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "scope": [
+            "9b2d89a5.d4115",
+            "b688fcc3.f8735",
+            "7dd0ab77.6f1574",
+            "7d7eb0f3.363b38",
+            "ebcd25d5.a1e6e8",
+            "9f4686a0.88a5e",
+            "c6ffaa9.5cb7d58",
+            "23734bf4.96bf24",
+            "9ef619de.e9aff8",
+            "747df02a.5f506",
+            "27c795a.196d66a",
+            "2c381ae5.7bd8b6",
+            "889b1d9a.b2b62",
+            "505ca507.cb59ac",
+            "cf1ad0e2.b1ce4",
+            "77ad0903.035f08"
+        ],
+        "uncaught": false,
+        "x": 610,
+        "y": 580,
+        "wires": [
+            [
+                "7ea1566e.15c648"
+            ]
+        ]
+    },
+    {
+        "id": "7ea1566e.15c648",
+        "type": "debug",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "cf272269.8ec9c",
+        "type": "complete",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "scope": [
+            "747df02a.5f506"
+        ],
+        "uncaught": false,
+        "x": 290,
+        "y": 340,
+        "wires": [
+            [
+                "fe66f1a8.73e8f"
+            ]
+        ]
+    },
+    {
+        "id": "8961150.9b34fe8",
+        "type": "influxdb in",
+        "z": "c535e74d.ab40f",
+        "influxdb": "aa92f3de7bb317f4",
+        "name": "query last",
+        "query": "from(bucket: \"bucket-A\")   |> range(start: -5m, stop: now())   |> filter(fn: (r) => r[\"_measurement\"] == \"test\")   |> last()",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "Node-RED",
+        "x": 740,
+        "y": 340,
+        "wires": [
+            [
+                "a6f36053.1b712"
+            ]
+        ]
+    },
+    {
+        "id": "5c077a61.575954",
+        "type": "debug",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1110,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fe66f1a8.73e8f",
+        "type": "change",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "write",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "8961150.9b34fe8"
+            ]
+        ]
+    },
+    {
+        "id": "be5513cb.789a5",
+        "type": "catch",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 600,
+        "y": 620,
+        "wires": [
+            [
+                "bc031033.9b3db"
+            ]
+        ]
+    },
+    {
+        "id": "bc031033.9b3db",
+        "type": "debug",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 810,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "a6f36053.1b712",
+        "type": "function",
+        "z": "c535e74d.ab40f",
+        "name": "check fields",
+        "func": "intValue = msg.payload[0]._value;\nnumValue = msg.payload[1]._value;\nrandomValue = msg.payload[2]._value;\nstrValue = msg.payload[3]._value;\n\nif (intValue+'i' !== msg.write.intValue) {\n    node.error('intValue not equivalent', msg);\n    return;\n}\n\nif (numValue !== msg.write.numValue) {\n    node.error('numValue not equivalent', msg);\n    return;\n}\n\nif (randomValue !== msg.write.randomValue) {\n    node.error('randomValue not equivalent', msg);\n    return;\n}\n\nif (strValue !== msg.write.strValue) {\n    node.error('strValue not equivalent', msg);\n    return;\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 930,
+        "y": 340,
+        "wires": [
+            [
+                "5c077a61.575954"
+            ]
+        ]
+    },
+    {
+        "id": "e271446.7110db8",
+        "type": "comment",
+        "z": "c535e74d.ab40f",
+        "name": "check write test",
+        "info": "Segment below checks that data written by segment above matches last data queried from the database.",
+        "x": 120,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "a22881b.f904d8",
+        "type": "influxdb in",
+        "z": "c535e74d.ab40f",
+        "influxdb": "aa92f3de7bb317f4",
+        "name": "no query error",
+        "query": "",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "Node-RED",
+        "x": 540,
+        "y": 500,
+        "wires": [
+            [
+                "3c31831b.89859c"
+            ]
+        ]
+    },
+    {
+        "id": "bb718815.254478",
+        "type": "inject",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 500,
+        "wires": [
+            [
+                "a22881b.f904d8"
+            ]
+        ]
+    },
+    {
+        "id": "3c31831b.89859c",
+        "type": "debug",
+        "z": "c535e74d.ab40f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 910,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "400d4e908394d080",
+        "type": "influxdb out",
+        "z": "c535e74d.ab40f",
+        "influxdb": "aa92f3de7bb317f4",
+        "name": "",
+        "measurement": "test",
+        "precision": "ms",
+        "retentionPolicy": "",
+        "database": "test",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "Node-RED",
+        "bucket": "bucket-A",
+        "x": 1060,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "aa92f3de7bb317f4",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://host.docker.internal:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    }
+]

@@ -1,0 +1,13 @@
+# A basic Prometheus configuration file
+
+global:
+  # How often to scrape targets
+  scrape_interval: 15s
+
+# A scrape configuration for Prometheus itself
+scrape_configs:
+  - job_name: 'prometheus'
+    # Scrape configuration for the Prometheus server itself
+    static_configs:
+      - targets: ['localhost:9090'] # Prometheus serves its own metrics on this port
+      
