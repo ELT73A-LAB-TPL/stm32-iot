@@ -1,0 +1,56 @@
+services:
+  influxdb:
+    image: influxdb:3-core
+    container_name: influxdb3
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    command: >
+      serve
+      --object-store file
+      --data-dir /var/lib/influxdb3
+      --node-id influxdb3-node
+    volumes:
+      - influxdb-data:/var/lib/influxdb3
+    networks:
+      - monitoring
+
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    restart: unless-stopped
+    depends_on:
+      - influxdb
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - monitoring
+
+volumes:
+  influxdb-data:
+  grafana-data:
+
+networks:
+  monitoring:
+    driver: bridge
