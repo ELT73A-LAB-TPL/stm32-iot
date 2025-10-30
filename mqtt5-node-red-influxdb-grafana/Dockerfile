@@ -12,7 +12,9 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund \
 	node-red-contrib-finite-statemachine \
 	node-red-contrib-ui-led \
 	node-red-node-serialport \
-	node-red-node-ui-table
+	node-red-node-ui-table \
+	node-red-contrib-postgresql \
+	node-red-node-sqlite
 	
 # Alternative STM32-related nodes (optional, uncomment if needed)
 #RUN npm install --unsafe-perm --no-update-notifier --no-fund \

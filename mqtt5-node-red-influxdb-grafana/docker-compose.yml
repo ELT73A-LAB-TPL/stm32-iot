@@ -18,10 +18,10 @@ services:
     # config for host.docker.internal
 
   node-red:
-    image: nodered/node-red:latest
-    #build:
-    #  context: .
-    # dockerfile: Dockerfile
+    #image: nodered/node-red:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: node-red
     environment:
       - TZ=America/Sao_Paulo
