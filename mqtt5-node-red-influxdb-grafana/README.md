@@ -1,4 +1,23 @@
 
+## Docker
+### Start
+```bash
+docker-compose up -d
+```
+
+### Start
+```bash
+docker-compose down
+```
+
+### Restart your container
+
+```bash
+docker-compose up -d --force-recreate
+```
+
+## InfluDB
+
 ```bash
 docker ps
 docker exec -it influxdb2 bash
