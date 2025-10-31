@@ -68,6 +68,7 @@ services:
     # Environmental variables for basic setup
     environment:
       # Optional: Set default admin credentials
+     # - GF_AUTH_BASIC_ENABLED=false
       - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-promgrafana}
     networks:
@@ -90,6 +91,17 @@ services:
     #   - '--storage.tsdb.path=/prometheus'
     networks:
       - iot-network
+    # https://ngrok.com/docs/using-ngrok-with/docker/
+  # ngrok:
+  #   image: ngrok/ngrok:latest
+  #   command:
+  #     - "http"
+  #     - "http://host.docker.internal:3000" # Forward to Grafana
+  #   container_name: ngrok
+  #   environment:
+  #     - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+  #   ports:
+  #     - 4040:4040
 volumes:
   mqtt-config:
     driver: local
