@@ -7,14 +7,17 @@ WORKDIR /usr/src/node-red
 # Install additional Node-RED nodes
 RUN npm install --unsafe-perm --no-update-notifier --no-fund \
     node-red-contrib-influxdb \
+	#node-red-contrib-influxdb3 \
 	node-red-dashboard \
 	node-red-contrib-bcrypt \
 	node-red-contrib-finite-statemachine \
 	node-red-contrib-ui-led \
 	node-red-node-serialport \
 	node-red-node-ui-table \
-	node-red-contrib-postgresql \
-	node-red-node-sqlite
+	node-red-contrib-calc \
+	#node-red-contrib-postgresql \
+	node-red-node-sqlite \
+	node-red-contrib-telegrambot
 	
 # Alternative STM32-related nodes (optional, uncomment if needed)
 #RUN npm install --unsafe-perm --no-update-notifier --no-fund \
