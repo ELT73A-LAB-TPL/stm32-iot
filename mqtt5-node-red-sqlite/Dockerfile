@@ -6,7 +6,7 @@ WORKDIR /usr/src/node-red
 	
 # Install additional Node-RED nodes
 RUN npm install --unsafe-perm --no-update-notifier --no-fund \
-    node-red-contrib-influxdb \
+    node-red-node-sqlite \
 	node-red-dashboard \
 	node-red-contrib-bcrypt \
 	node-red-contrib-finite-statemachine \
