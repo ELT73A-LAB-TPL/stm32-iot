@@ -4,10 +4,10 @@ FROM nodered/node-red:latest
 # Switch to root to handle system packages and directory creation
 # (Required for node-red-node-serialport to build native C++ bindings)
 USER root
-RUN apk add --no-cache python3 make g++
+#RUN apk add --no-cache python3 make g++
 
 # Create the sqlite directory inside /data and set the correct ownership
-RUN mkdir -p /data/sqlite && chown 1000:1000 /data/sqlite
+RUN mkdir -p /data/sqlite && chown -R node-red:node-red /data/sqlite
 
 # Switch back to the default node-red user (UID 1000)
 USER node-red
@@ -23,7 +23,8 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund \
 	node-red-contrib-finite-statemachine \
 	@flowfuse/node-red-dashboard-2-ui-led \
 	node-red-node-serialport \
-	node-red-node-ui-table
+	node-red-node-ui-table \
+	&& npm cache clean --force
 	
 # Alternative STM32-related nodes (optional, uncomment if needed)
 #RUN npm install --unsafe-perm --no-update-notifier --no-fund \
