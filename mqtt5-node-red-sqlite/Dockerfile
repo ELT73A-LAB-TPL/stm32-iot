@@ -1,16 +1,27 @@
 # Use the official Node-RED base image
 FROM nodered/node-red:latest
 
-# Set working directory
+# Switch to root to handle system packages and directory creation
+# (Required for node-red-node-serialport to build native C++ bindings)
+USER root
+RUN apk add --no-cache python3 make g++
+
+# Create the sqlite directory inside /data and set the correct ownership
+RUN mkdir -p /data/sqlite && chown 1000:1000 /data/sqlite
+
+# Switch back to the default node-red user (UID 1000)
+USER node-red
+
+# Set working directory to the data folder
 WORKDIR /usr/src/node-red
 	
 # Install additional Node-RED nodes
 RUN npm install --unsafe-perm --no-update-notifier --no-fund \
     node-red-node-sqlite \
-	node-red-dashboard \
+	@flowfuse/node-red-dashboard \
 	node-red-contrib-bcrypt \
 	node-red-contrib-finite-statemachine \
-	node-red-contrib-ui-led \
+	@flowfuse/node-red-dashboard-2-ui-led \
 	node-red-node-serialport \
 	node-red-node-ui-table
 	
@@ -19,10 +30,10 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund \
 #    @stm32/node-red-contrib-stm32cubemonitor
 
 # Copy custom settings file (optional)
-#COPY settings.js /data/settings.js
+COPY settings.js /data/settings.js
 
 # Copy custom flows (optional)
-#COPY flows.json /data/flows.json
+COPY flows.json /data/flows.json
 
 # Expose Node-RED port
 EXPOSE 1880
