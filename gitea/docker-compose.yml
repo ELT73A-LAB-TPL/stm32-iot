@@ -1,0 +1,58 @@
+networks:
+  iot_network:
+    driver: bridge
+
+volumes:
+  gitea_data:
+  gitea_db:
+  nodered_data:
+
+services:
+  # Database for Gitea (PostgreSQL is highly recommended over SQLite for stability)
+  gitea_db:
+    image: postgres:15-alpine
+    container_name: gitea_db
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea_secure_pass_change_me
+      - POSTGRES_DB=gitea
+    networks:
+      - iot_network
+    volumes:
+      - gitea_db:/var/lib/postgresql/data
+
+  # Gitea Service
+  gitea:
+    image: gitea/gitea:1.21-rootless # Rootless image is standard for security
+    container_name: gitea_service
+    restart: always
+    environment:
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea_db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea_secure_pass_change_me
+    ports:
+      - "3000:3000" # Web UI
+      - "2222:2222" # SSH port for Git actions
+    networks:
+      - iot_network
+    volumes:
+      - gitea_data:/var/lib/gitea
+    depends_on:
+      - gitea_db
+
+  # Node-RED Service
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered_service
+    restart: always
+    ports:
+      - "1881:1880" # Node-RED UI
+    networks:
+      - iot_network
+    volumes:
+      - nodered_data:/data
+    environment:
+      - TZ=America/Sao_Paulo # Change to your local timezone
