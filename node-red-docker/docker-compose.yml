@@ -1,0 +1,51 @@
+name: mqtt5-node-red-sqlite
+
+services:
+  mqtt5:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt5
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # WebSocket port
+    volumes:
+      # CRITICAL FIX: If you map individual subfolders AND the main config file, 
+      # Mosquitto can sometimes lock up. It's usually best to just map the main 3 folders.
+      - mqtt-config:/mosquitto/config:rw
+      - mqtt-data:/mosquitto/data:rw
+      - mqtt-log:/mosquitto/log:rw
+      # If you want a custom file from your host, it's safer to mount it directly like this:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - iot-network
+    restart: unless-stopped
+    # Enabling host.docker.internal so containers can talk to your host machine apps (if needed)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  node-red:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node-red
+    environment:
+      - TZ=America/Sao_Paulo
+    ports:
+      - "1881:1880"  # Node-RED UI mapped to 1881 on your computer
+    volumes:
+      # This matches the persistent volume named below
+      - node-red-data:/data
+    depends_on:
+      - mqtt5
+    networks:
+      - iot-network
+    restart: unless-stopped
+
+volumes:
+  mqtt-config:
+  mqtt-data:
+  mqtt-log:
+  node-red-data:
+
+networks:
+  iot-network:
+    driver: bridge

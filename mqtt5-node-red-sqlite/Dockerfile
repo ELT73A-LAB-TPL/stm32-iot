@@ -1,5 +1,6 @@
 # Use the official Node-RED base image
 FROM nodered/node-red:latest
+#FROM nodered/node-red:minimal
 
 # Switch to root to handle system packages and directory creation
 # (Required for node-red-node-serialport to build native C++ bindings)
