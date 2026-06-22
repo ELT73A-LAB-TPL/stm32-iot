@@ -1,0 +1,95 @@
+services:
+
+  # ─────────────────────────────────────────
+  # BROKER MQTT — Mosquitto
+  # ─────────────────────────────────────────
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: smartband-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"       # MQTT
+      - "9001:9001"       # WebSocket MQTT (opcional, para debug via browser)
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    networks:
+      - smartband-net
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────────────────────────────────
+  # ORQUESTRADOR — Node-RED
+  # ─────────────────────────────────────────
+  nodered:
+    image: nodered/node-red:latest
+    container_name: smartband-nodered
+    restart: unless-stopped
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    ports:
+      - "1880:1880"       # Interface web Node-RED
+      - "8765:8765"       # WebSocket para app Flutter
+    environment:
+      - TZ=America/Sao_Paulo
+      - NODE_RED_CREDENTIAL_SECRET=${NODE_RED_SECRET:-smartband_secret_key}
+    volumes:
+      - nodered-data:/data
+      - ./sqlite:/data/sqlite      # banco SQLite persistido no host
+    networks:
+      - smartband-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1880"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ─────────────────────────────────────────
+  # NOTIFICAÇÕES PUSH — Ntfy (self-hosted)
+  # ─────────────────────────────────────────
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: smartband-ntfy
+    restart: unless-stopped
+    command: serve
+    ports:
+      - "8080:80"         # Interface web + API Ntfy
+    environment:
+      - TZ=America/Sao_Paulo
+      - NTFY_BASE_URL=http://ntfy.local:8080
+      - NTFY_LISTEN_HTTP=:80
+      - NTFY_BEHIND_PROXY=false
+      - NTFY_AUTH_DEFAULT_ACCESS=deny-all   # requer autenticação
+    volumes:
+      - ntfy-cache:/var/cache/ntfy
+      - ntfy-etc:/etc/ntfy
+    networks:
+      - smartband-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -c ok"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+# ─────────────────────────────────────────
+# VOLUMES PERSISTENTES
+# ─────────────────────────────────────────
+volumes:
+  mosquitto-data:
+  mosquitto-log:
+  nodered-data:
+  ntfy-cache:
+  ntfy-etc:
+
+# ─────────────────────────────────────────
+# REDE INTERNA
+# ─────────────────────────────────────────
+networks:
+  smartband-net:
+    driver: bridge
